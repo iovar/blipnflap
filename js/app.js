@@ -1,8 +1,9 @@
 //App is a singleton
-var App = (function(exports) {
+var App = (function() {
   var _app = function() {
-    this.screen = new Screen();
-    this.game = new Game(this.screen);
+    this.config = new Config();
+    this.screen = new Screen(this.config);
+    this.game = new Game(this.screen, this.config);
     this._setupEventListeners();
     this.screen.clear();
   };
@@ -28,7 +29,5 @@ var App = (function(exports) {
     }
   };
 
-  exports.app = new _app();
-
-  return exports;
+  return new _app();
 })({});

@@ -1,36 +1,91 @@
 var Screen = (function() {
-  var exports = function() {
-    this.canvas = document.getElementById('screen');
-    this.canvas.width = document.body.clientWidth;
-    this.canvas.height = document.body.clientHeight;
+  var _screen = function(config) {
+    this.config = config;
+    this._init();
+    this._adjustSize();
+  };
+
+  _screen.prototype._adjustSize = function() {
+    this.canvas.height = this.config.height;
+    this.canvas.width = this.config.width;
+  };
+
+  _screen.prototype._init = function() {
+    this.canvas = document.getElementById(this.config.CONST.CANVAS_ID);
     this.context = this.canvas.getContext('2d');
-    this.fg = "#ffffff";
-    this.bg = "#000000";
-    this.y = this.canvas.height * 0.45;
-    this.x = this.canvas.width/10;
+    this.offset = 0;
+    this._moving = true;
   };
 
-  exports.prototype.clear = function() {
-    this.context.fillStyle = this.bg;
+  _screen.prototype.clear = function() {
+    this.context.fillStyle = this.config.bg;
     this.context.fillRect(0,0,
-        this.canvas.width,this.canvas.height);
+        this.config.width,this.config.height);
   };
 
-  exports.prototype.drawPlayer = function(position) {
-    this.context.fillStyle = this.fg;
-    this.context.fillRect(position.x+this.x,
-        position.y+this.y,
-        this.canvas.height/20, this.canvas.height/20);
+  _screen.prototype.drawPlayer = function(position) {
+    this.context.fillStyle = this.config.fg;
+    this.context.fillRect(position.x+this.config.offset.x,
+        position.y+this.config.offset.y,
+        this.config.blockSize, this.config.blockSize);
   };
 
-  exports.prototype.drawObstacles = function(level) {
+  _screen.prototype.drawObstacles = function(level) {
+    var offset = 0;
 
+    this.config.fillStyle = this.config.fg;
+    for(var i=0;i<level.length;i++) {
+      this.context.fillRect(offset + level[i].left,
+                    0,
+                    this.config.obstacleWidth,
+                    level[i].top);
+
+      this.context.fillRect(offset + level[i].left,
+                    level[i].top + level[i].pass,
+                    this.config.obstacleWidth,
+                    level[i].bottom);
+      offset += level[i].left + this.config.obstacleWidth;
+    }
   };
 
-  exports.prototype.draw = function(position, level) {
+  _screen.prototype.drawGround = function(left) {
+    var y = this.config.height - this.config.groundHeight -
+            this.config.blockSize/4,
+        height = this.config.groundHeight + this.config.blockSize/4,
+        width = this.config.width,
+        repeat = (this.config.obstacleWidth +
+                 this.config.obstacleDistance),
+        numlines = 5,
+        line = repeat/(numlines*2),
+        offset = this.offset;
 
+    this.context.fillRect(0,y, width, height/10);
+    for(var i =0; i<this.config.maxObstacles*numlines; i++) {
+      this.context.fillRect(offset, y, line, height);
+      offset += 2*line;
+    }
+    if(this.offset<-line) {
+      this.offset = line;
+    }
+    if(this._moving) {
+      this.offset-= this.config.blockSize/8;
+    }
   };
 
+  _screen.prototype.draw = function(position, level) {
+    this.clear();
+    this.drawPlayer(position);
+    this.drawObstacles(level);
+    this.drawGround();
+  };
 
-  return exports;
+  _screen.prototype.pauseGround = function() {
+    this._moving = false;
+  };
+
+  _screen.prototype.resumeGround = function() {
+    this._moving = true;
+  };
+
+  return _screen;
 })();
