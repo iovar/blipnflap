@@ -1,5 +1,7 @@
 Fix ground height
 
+resize completely 
+
 measure points
 draw current score (DOM)
 keep high score (localstorage)

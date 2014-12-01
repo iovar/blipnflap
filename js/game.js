@@ -74,10 +74,16 @@ var Game = (function() {
       this.move();
       this.advance();
       if(this.check()) {
-        var self = this;
+        var self = this,
+            fg = this.config.fg,
+            bg = this.config.bg;
 
         this.screen.pauseGround();
+        this.config.colors(fg,bg);
         this.state = 2;
+        setTimeout(function() {
+          self.config.colors(bg,fg);
+        },50);
         setTimeout(function() {
           self.screen.resumeGround();
           self.reset();

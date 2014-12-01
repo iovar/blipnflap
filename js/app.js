@@ -19,15 +19,6 @@ var App = (function() {
     addEventListener('touchstart', function(e) {
       self._handleEvent();
     });
-    addEventListener('resize', function(e) {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function() {
-        console.log('res');
-        self.config.calibrate();
-        self.screen._adjustSize();
-        self.game._generateLevel();
-      },500);
-    });
   };
 
   _app.prototype._handleEvent = function() {

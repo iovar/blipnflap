@@ -31,7 +31,6 @@ var Config = (function() {
     this._obstacleDistance();
     this._maxObstaclesVisible();
     this._offset();
-    //this.colors('#2C362F','#91B49C');
     this.colors('#91B49C','#2C362F');
   };
 
