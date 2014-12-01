@@ -14,7 +14,6 @@ var Game = (function() {
     },33);
   };
 
-
   _game.prototype.reset = function() {
     this.state = 0; //0 not started, 1 playing, 2 dead
     this.ymod = 0;
@@ -48,7 +47,8 @@ var Game = (function() {
   };
 
   _game.prototype._checkObstacle = function() {
-    var obx1 = this.level[0].left,
+    var boundary = this.config.collisionBoundary,
+        obx1 = this.level[0].left,
         obx2 = obx1 + this.config.obstacleWidth,
         obminy = this.level[0].top,
         obmaxy = obminy + this.level[0].pass,
@@ -57,9 +57,9 @@ var Game = (function() {
         pminy = this.config.offset.y + this.position.y ,
         pmaxy = pminy + this.config.blockSize;
 
-    if( (px2 > obx1 && px2 < obx2) ||
-        (px1 > obx1 && px1 < obx2) ) {
-      if(pminy<obminy || pmaxy > obmaxy) {
+    if( (px2 - obx1 > boundary  && obx2 > px2) ||
+        (px1 > obx1 && obx2 - px1 > boundary) ) {
+      if(obminy - pminy > boundary|| pmaxy - obmaxy > boundary) {
         return true;
       }
     }
@@ -68,6 +68,7 @@ var Game = (function() {
 
   _game.prototype.loop = function() {
     this.screen.draw(this.position,
+                     this.speed,
                      this.level);
     if(this.state === 1) {
       this.move();
@@ -81,6 +82,11 @@ var Game = (function() {
           self.screen.resumeGround();
           self.reset();
         },3000);
+      }
+    }
+    else if(this.state === 2) {
+      if(this.position.y + this.config.offset.y<this.config.height - this.config.groundHeight - this.config.blockSize) {
+        this.move();
       }
     }
     else if(this.state === 0) {
@@ -117,8 +123,10 @@ var Game = (function() {
 
   _game.prototype.move = function() {
     var dt = (Date.now() - this.timestamp)/1000;
-    this.position.y-=this.speed*(this.config.height/100);
-    this.speed -= 1/2 * (this.config.CONST.GRAVITY * Math.pow(dt,2));
+    this.position.y-=this.speed*(this.config.height/150);
+    if(this.speed >= -2*this.config.CONST.JUMP_SPEED) {
+      this.speed -= 1/2 * (this.config.CONST.GRAVITY * Math.pow(dt,2));
+    }
   };
 
   _game.prototype.soar = function() {

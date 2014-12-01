@@ -23,11 +23,32 @@ var Screen = (function() {
         this.config.width,this.config.height);
   };
 
-  _screen.prototype.drawPlayer = function(position) {
+  _screen.prototype.drawPlayer = function(position,speed) {
     this.context.fillStyle = this.config.fg;
+    this.context.save();
+    this.context.translate(
+        (position.x+this.config.offset.x+this.config.blockSize/2),
+        (position.y+this.config.offset.y+this.config.blockSize/2));
+    this.context.rotate(-speed/3);
+    this.context.translate(
+        -(position.x+this.config.offset.x+this.config.blockSize/2),
+        -(position.y+this.config.offset.y+this.config.blockSize/2));
     this.context.fillRect(position.x+this.config.offset.x,
         position.y+this.config.offset.y,
         this.config.blockSize, this.config.blockSize);
+    this.context.fillStyle = this.config.bg;
+    this.context.fillRect(position.x+this.config.offset.x+this.config.blockSize*0.6,
+        position.y+this.config.offset.y+this.config.blockSize*0.2,
+        this.config.blockSize*0.2, this.config.blockSize*0.2);
+    this.context.fillStyle = this.config.fg;
+    this.context.fillRect(position.x+this.config.offset.x+this.config.blockSize*0.65,
+        position.y+this.config.offset.y+this.config.blockSize*0.25,
+        this.config.blockSize*0.1, this.config.blockSize*0.1);
+    this.context.fillStyle = this.config.bg;
+    this.context.fillRect(position.x+this.config.offset.x+this.config.blockSize*0.3,
+        position.y+this.config.offset.y+this.config.blockSize*0.8,
+        this.config.blockSize*0.7, this.config.blockSize*0.1);
+    this.context.restore();
   };
 
   _screen.prototype.drawObstacles = function(level) {
@@ -59,9 +80,10 @@ var Screen = (function() {
         line = repeat/(numlines*2),
         offset = this.offset;
 
-    this.context.fillRect(0,y, width, height/10);
+    this.context.fillStyle = this.config.fg;
+    this.context.fillRect(0,y+height*0.05, width, height*0.95);
     for(var i =0; i<this.config.maxObstacles*numlines; i++) {
-      this.context.fillRect(offset, y, line, height);
+      this.context.fillRect(offset, y, line, height*0.05);
       offset += 2*line;
     }
     if(this.offset<-line) {
@@ -72,11 +94,11 @@ var Screen = (function() {
     }
   };
 
-  _screen.prototype.draw = function(position, level) {
+  _screen.prototype.draw = function(position, speed, level) {
     this.clear();
-    this.drawPlayer(position);
-    this.drawObstacles(level);
     this.drawGround();
+    this.drawObstacles(level);
+    this.drawPlayer(position,speed);
   };
 
   _screen.prototype.pauseGround = function() {

@@ -5,22 +5,25 @@ var Config = (function() {
 
   _config.prototype.CONST = {
     CANVAS_ID : 'screen',
-    JUMP_SPEED : 1.2,
-    GRAVITY: 7.63,
-    MAX_RATIO: 0.66667,
+    JUMP_SPEED : 1.5,
+    GRAVITY: 9.5,
+    MAX_RATIO: 0.752,
     BLOCKS_PER_SCREEN_HEIGHT: 20,
     BLOCKS_PER_PASS_HEIGHT: 4,
     BLOCKS_PER_PASS_WIDTH: 1.8,
-    BLOCKS_PER_OBSTACLES: [1, 3, 5, 7, 9 ,11],
+    BLOCKS_PER_OBSTACLES: [3, 4, 5, 7, 8, 9],
     BLOCKS_PER_OBSTACE_DISTANCE: 3.6,
     BLOCKS_PER_GROUND: 4,
     BLOCKS_PER_SOAR_WIDTH: 1,
-    BLOCKS_PER_OFFSET: {X: 2.5, Y: 8}
+    BLOCKS_PER_OFFSET: {X: 2.5, Y: 8},
+    COLLISION_BOUNDARY: 0.1,
+    BG_PIXEL_SIZE: 4
   };
 
   _config.prototype.calibrate = function() {
     this._canvasSize();
     this._blockSize();
+    this._collisionBoundary();
     this._groundHeight();
     this._passSize();
     this._soarWidth();
@@ -28,7 +31,8 @@ var Config = (function() {
     this._obstacleDistance();
     this._maxObstaclesVisible();
     this._offset();
-    this.colors();
+    //this.colors('#2C362F','#91B49C');
+    this.colors('#91B49C','#2C362F');
   };
 
   _config.prototype._canvasSize = function() {
@@ -44,6 +48,11 @@ var Config = (function() {
   _config.prototype._blockSize = function() {
     this.blockSize =
       this.height/this.CONST.BLOCKS_PER_SCREEN_HEIGHT | 0;
+  };
+
+  _config.prototype._collisionBoundary = function() {
+    this.collisionBoundary =
+      this.blockSize * this.CONST.COLLISION_BOUNDARY | 0;
   };
 
   _config.prototype._groundHeight = function() {
@@ -87,6 +96,13 @@ var Config = (function() {
       x: this.blockSize * this.CONST.BLOCKS_PER_OFFSET.X | 0,
       y: this.blockSize * this.CONST.BLOCKS_PER_OFFSET.Y
     };
+    var xalign = this.offset.x % this.CONST.BG_PIXEL_SIZE;
+    if(xalign > this.CONST.BG_PIXEL_SIZE/2) {
+      this.offset.x = this.offset.x - xalign +this.CONST.BG_PIXEL_SIZE;
+    }
+    else {
+      this.offset.x = this.offset.x - xalign ;
+    }
   };
 
   _config.prototype.colors = function(bg, fg) {

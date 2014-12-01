@@ -9,7 +9,8 @@ var App = (function() {
   };
 
   _app.prototype._setupEventListeners = function() {
-    var self = this;
+    var self = this,
+        resizeTimer = -1;
     addEventListener('keydown', function(e) {
       if(e.which === 32 || e.keycode === 32) {
         self._handleEvent();
@@ -17,6 +18,15 @@ var App = (function() {
     });
     addEventListener('touchstart', function(e) {
       self._handleEvent();
+    });
+    addEventListener('resize', function(e) {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        console.log('res');
+        self.config.calibrate();
+        self.screen._adjustSize();
+        self.game._generateLevel();
+      },500);
     });
   };
 
