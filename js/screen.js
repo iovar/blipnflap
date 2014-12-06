@@ -12,6 +12,11 @@ var Screen = (function() {
 
   _screen.prototype._init = function() {
     this.canvas = document.getElementById(this.config.CONST.CANVAS_ID);
+    this.scoreBoard = document.getElementById('score-board');
+    this.scoreBoardHigh = this.scoreBoard
+                              .querySelector('.high .score');
+    this.scoreBoardCurrent = this.scoreBoard
+                                 .querySelector('.current .score');
     this.context = this.canvas.getContext('2d');
     this.offset = 0;
     this._moving = true;
@@ -69,25 +74,24 @@ var Screen = (function() {
     }
   };
 
-  _screen.prototype.drawGround = function(left) {
+  _screen.prototype.drawGround = function() {
     var y = this.config.height - this.config.groundHeight -
             this.config.blockSize/4,
         height = this.config.groundHeight + this.config.blockSize/4,
         width = this.config.width,
-        repeat = (this.config.obstacleWidth +
-                 this.config.obstacleDistance),
-        numlines = 5,
-        line = repeat/(numlines*2),
+        repeat = this.config.width,
+        numlines = 10,
+        line = repeat/(numlines*2) ,
         offset = this.offset;
 
     this.context.fillStyle = this.config.fg;
     this.context.fillRect(0,y+height*0.05, width, height*0.95);
-    for(var i =0; i<this.config.maxObstacles*numlines; i++) {
+    for(var i =0; i<numlines*2; i++) {
       this.context.fillRect(offset, y, line, height*0.05);
       offset += 2*line;
     }
-    if(this.offset<-line) {
-      this.offset = line;
+    if(this.offset <= -line * 8) {
+      this.offset+= line*8;
     }
     if(this._moving) {
       this.offset-= this.config.blockSize/8;
@@ -107,6 +111,19 @@ var Screen = (function() {
 
   _screen.prototype.resumeGround = function() {
     this._moving = true;
+  };
+
+  _screen.prototype.setScore = function(high, score) {
+    if(high) {
+      this.scoreBoardHigh.innerHTML = score;
+    }
+    else {
+      this.scoreBoardCurrent.innerHTML = score;
+    }
+  };
+
+  _screen.prototype.showHighScore = function(show) {
+    this.scoreBoard.classList.toggle('show-high',show);
   };
 
   return _screen;

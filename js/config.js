@@ -24,8 +24,8 @@ var Config = (function() {
     this._canvasSize();
     this._blockSize();
     this._collisionBoundary();
-    this._groundHeight();
     this._passSize();
+    this._groundHeight();
     this._soarWidth();
     this._obstacleSize();
     this._obstacleDistance();
@@ -55,7 +55,7 @@ var Config = (function() {
   };
 
   _config.prototype._groundHeight = function() {
-    this.groundHeight = this.blockSize * this.CONST.BLOCKS_PER_GROUND;
+    this.groundHeight = this.height - this.blockSize * 12 - this.passHeight;
   };
 
   _config.prototype._passSize = function() {
@@ -82,7 +82,7 @@ var Config = (function() {
 
   _config.prototype._obstacleDistance = function() {
     this.obstacleDistance =
-      this.blockSize * this.CONST.BLOCKS_PER_OBSTACE_DISTANCE;
+      this.blockSize * this.CONST.BLOCKS_PER_OBSTACE_DISTANCE | 0;
   };
 
   _config.prototype._maxObstaclesVisible = function() {

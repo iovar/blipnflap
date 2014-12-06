@@ -2,6 +2,7 @@ var Game = (function() {
   var _game = function(screen, config) {
     this.screen = screen;
     this.config = config;
+    this.loadHighScore();
     this.reset();
     this._startLoop();
   };
@@ -20,8 +21,11 @@ var Game = (function() {
     this.position = {x:0,y:0};
     this.objectOffset = 100;
     this.speed = 0;
+    this.score = 0;
     this.timestamp = Date.now();
     this.level = [];
+    this.screen.setScore(false,0);
+    this.screen.setScore(true,this.highScore);
   };
 
   _game.prototype.advance = function() {
@@ -73,19 +77,25 @@ var Game = (function() {
     if(this.state === 1) {
       this.move();
       this.advance();
+      this.checkPoint();
       if(this.check()) {
         var self = this,
             fg = this.config.fg,
             bg = this.config.bg;
 
+        audio.play('die');
         this.screen.pauseGround();
         this.config.colors(fg,bg);
+        this.saveHighScore();
         this.state = 2;
+        this.screen.setScore(true,this.highScore);
         setTimeout(function() {
           self.config.colors(bg,fg);
         },50);
         setTimeout(function() {
           self.screen.resumeGround();
+          self.screen.setScore(false,0);
+          self.screen.showHighScore(true);
           self.reset();
         },3000);
       }
@@ -103,6 +113,7 @@ var Game = (function() {
   _game.prototype.start = function() {
     this.reset();
     this.state = 1;
+    this.screen.showHighScore(false);
     this.speed = 2;
     this._generateLevel();
   };
@@ -122,7 +133,8 @@ var Game = (function() {
       top: this.config.obstacleHeight[sel],
       pass: this.config.passHeight,
       bottom: this.config.obstacleHeight[num - sel - 1],
-      left: this.config.obstacleDistance
+      left: this.config.obstacleDistance,
+      done: false
     };
     return obstacle;
   };
@@ -146,9 +158,29 @@ var Game = (function() {
     this.timestamp = Date.now();
   };
 
+  _game.prototype.loadHighScore = function() {
+    var _val = localStorage.getItem('blockyflap-highscore');
 
-  _game.prototype.end = function() {
+    this.highScore = (_val) ? parseInt(_val) : 0;
+  };
 
+  _game.prototype.saveHighScore = function() {
+    if(this.score > this.highScore) {
+
+      this.highScore = this.score;
+      localStorage.setItem('blockyflap-highscore', this.highScore);
+    }
+  };
+
+  _game.prototype.checkPoint = function() {
+    if( this.level[0] && !this.level[0].done &&
+        (this.config.offset.x >
+         this.level[0].left + this.config.obstacleWidth)) {
+      this.level[0].done = true;
+      this.score++;
+      audio.play('point');
+      this.screen.setScore(false, this.score);
+    }
   };
 
   return _game;

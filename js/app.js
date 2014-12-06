@@ -6,6 +6,7 @@ var App = (function() {
     this.game = new Game(this.screen, this.config);
     this._setupEventListeners();
     this.screen.clear();
+    audio.play('die');
   };
 
   _app.prototype._setupEventListeners = function() {
@@ -24,9 +25,11 @@ var App = (function() {
   _app.prototype._handleEvent = function() {
     if(this.game.state === 0) {
       this.game.start();
+      audio.play('move');
     }
     else if(this.game.state === 1){
       this.game.jump();
+      audio.play('move');
     }
   };
 
