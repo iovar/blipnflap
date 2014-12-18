@@ -1,7 +1,7 @@
 blockyflap
 ==========
 
-A flappy block game with a retro look
+A flapy block game with a retro look
 
 
 
