@@ -6,6 +6,7 @@ var App = (function() {
     this.game = new Game(this.screen, this.config);
     this._setupEventListeners();
     this.screen.clear();
+    this.soundsLoaded = false;
     audio.play('die');
   };
 
@@ -18,6 +19,10 @@ var App = (function() {
       }
     });
     addEventListener('touchstart', function(e) {
+      if(!this.soundsLoaded) {
+        audio.load();
+        this.soundsLoaded = true;
+      }
       self._handleEvent();
     });
   };
