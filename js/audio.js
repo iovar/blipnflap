@@ -92,10 +92,5 @@ var _audioCordova = {
   }
 };
 
-if(window.cordova) {
-  window.audio = _audioCordova;
-}
-else {
-  window.audio = _audioTag;
-}
+window.audio = _audioTag;
 
