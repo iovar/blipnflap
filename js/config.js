@@ -31,7 +31,7 @@ var Config = (function() {
     this._obstacleDistance();
     this._maxObstaclesVisible();
     this._offset();
-    this.colors('#91B49C','#2C362F');
+    this.colors('#000000','#013AE3','#FFFA23');
   };
 
   _config.prototype._canvasSize = function() {
@@ -104,9 +104,10 @@ var Config = (function() {
     }
   };
 
-  _config.prototype.colors = function(bg, fg) {
-    this.bg = bg? bg : "#000000";
-    this.fg = fg? fg : "#ffffff";
+  _config.prototype.colors = function(bg, fg, pl) {
+    this.bg = bg || "#000000";
+    this.fg = fg || "#ffffff";
+    this.pl = pl || "#ffff22";
   };
 
   return _config;

@@ -19,6 +19,9 @@ var Screen = (function() {
                                  .querySelector('.current .score');
     this.context = this.canvas.getContext('2d');
     this.offset = 0;
+    this.mouth = 0;
+    this.mouthDirection = true;
+
     this._moving = true;
   };
 
@@ -29,7 +32,7 @@ var Screen = (function() {
   };
 
   _screen.prototype.drawPlayer = function(position,speed) {
-    this.context.fillStyle = this.config.fg;
+    this.context.fillStyle = this.config.pl;
     this.context.save();
     this.context.translate(
         (position.x+this.config.offset.x+this.config.blockSize/2),
@@ -38,35 +41,51 @@ var Screen = (function() {
     this.context.translate(
         -(position.x+this.config.offset.x+this.config.blockSize/2),
         -(position.y+this.config.offset.y+this.config.blockSize/2));
-    this.context.fillRect(position.x+this.config.offset.x,
-        position.y+this.config.offset.y,
-        this.config.blockSize, this.config.blockSize);
-    this.context.fillStyle = this.config.bg;
-    this.context.fillRect(position.x+this.config.offset.x+this.config.blockSize*0.6,
-        position.y+this.config.offset.y+this.config.blockSize*0.2,
-        this.config.blockSize*0.2, this.config.blockSize*0.2);
-    this.context.fillStyle = this.config.fg;
-    this.context.fillRect(position.x+this.config.offset.x+this.config.blockSize*0.65,
-        position.y+this.config.offset.y+this.config.blockSize*0.25,
-        this.config.blockSize*0.1, this.config.blockSize*0.1);
-    this.context.fillStyle = this.config.bg;
-    this.context.fillRect(position.x+this.config.offset.x+this.config.blockSize*0.3,
-        position.y+this.config.offset.y+this.config.blockSize*0.8,
-        this.config.blockSize*0.7, this.config.blockSize*0.1);
+    this.context.beginPath();
+    this.context.arc(position.x + this.config.offset.x +this.config.blockSize/2,
+                      position.y+this.config.offset.y +this.config.blockSize/2,
+                      this.config.blockSize/2, (0.25-this.mouth) * Math.PI,
+                      (1.25 -this.mouth) * Math.PI,false);
+    this.context.closePath ();
+    this.context.fill();
+    this.context.beginPath();
+    this.context.arc(position.x + this.config.offset.x +this.config.blockSize/2,
+                      position.y+this.config.offset.y +this.config.blockSize/2,
+                      this.config.blockSize/2,
+                      (0.75 +this.mouth) * Math.PI, (1.75+this.mouth) * Math.PI,false);
+
+    this.context.closePath ();
+    this.context.fill();
     this.context.restore();
+    if(this._moving) {
+      if(this.mouth >=0.24 || this.mouth <0) {
+        this.mouthDirection = ! this.mouthDirection;
+      }
+      this.mouth += (this.mouthDirection) ? 0.04 :  -0.04;
+    }
   };
 
   _screen.prototype.drawObstacles = function(level) {
     var offset = 0;
 
-    this.config.fillStyle = this.config.fg;
+    this.context.fillStyle = "#fff";
+    this.context.lineWidth = this.config.blockSize/16;
+    this.context.strokeStyle = this.config.fg;
     for(var i=0;i<level.length;i++) {
-      this.context.fillRect(offset + level[i].left,
+      this.context.strokeRect(offset + level[i].left,
                     0,
                     this.config.obstacleWidth,
                     level[i].top);
+      if( this.config.offset.x < offset + level[i].left + this.config.obstacleWidth) {
+        this.context.beginPath();
+        this.context.arc(offset + level[i].left + this.config.obstacleWidth,
+                      level[i].top + level[i].pass/2,
+                      this.config.blockSize/8, 0, 2 * Math.PI, false);
+        this.context.closePath ();
+        this.context.fill();
+      }
 
-      this.context.fillRect(offset + level[i].left,
+      this.context.strokeRect(offset + level[i].left,
                     level[i].top + level[i].pass,
                     this.config.obstacleWidth,
                     level[i].bottom);
@@ -85,9 +104,10 @@ var Screen = (function() {
         offset = this.offset;
 
     this.context.fillStyle = this.config.fg;
-    this.context.fillRect(0,y+height*0.05, width, height*0.95);
+    this.context.strokeStyle = this.config.fg;
+    this.context.strokeRect(-this.context.lineWidth*2,y+height*0.05, width+this.context.lineWidth*4, height*0.95);
     for(var i =0; i<numlines*2; i++) {
-      this.context.fillRect(offset, y, line, height*0.05);
+      this.context.strokeRect(offset, y, line, height*0.05);
       offset += 2*line;
     }
     if(this.offset <= -line * 8) {
@@ -111,6 +131,8 @@ var Screen = (function() {
 
   _screen.prototype.resumeGround = function() {
     this._moving = true;
+    this.mouth = 0;
+    this.mouthDirection = true;
   };
 
   _screen.prototype.setScore = function(high, score) {
