@@ -92,5 +92,10 @@ var _audioCordova = {
   }
 };
 
-window.audio = _audioTag;
+if(window.cordova) {
+  window.audio = _audioCordova;
+}
+else {
+  window.audio = _audioTag;
+}
 
