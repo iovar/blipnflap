@@ -1,5 +1,4 @@
-//App is a singleton
-var App = (function() {
+(function() {
   var _app = function() {
     this.config = new Config();
     this.screen = new Screen(this.config);
@@ -38,5 +37,9 @@ var App = (function() {
     }
   };
 
-  return new _app();
+  window.addEventListener('load', function() {
+    FastClick.attach(document.body);
+    //App is a singleton
+    window.App = new _app();
+  }, false);
 })({});
