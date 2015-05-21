@@ -6,7 +6,7 @@ var Config = (function() {
   _config.prototype.CONST = {
     CANVAS_ID : 'screen',
     JUMP_SPEED : 1.5,
-    GRAVITY: 9.5,
+    GRAVITY: 8.0,
     MAX_RATIO: 0.752,
     BLOCKS_PER_SCREEN_HEIGHT: 20,
     BLOCKS_PER_PASS_HEIGHT: 4,

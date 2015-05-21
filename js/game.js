@@ -123,7 +123,7 @@ var Game = (function() {
     for(var i = 0; i<this.config.maxObstacles; i++) {
       this.level.push(this._getObstacle());
     }
-    this.level[0].left += this.config.width*1.5;
+    this.level[0].left += this.config.width*1;
   };
 
   _game.prototype._getObstacle = function() {
