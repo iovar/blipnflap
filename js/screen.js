@@ -88,7 +88,7 @@ var Screen = (function() {
       this.context.strokeRect(offset + level[i].left,
                     level[i].top + level[i].pass,
                     this.config.obstacleWidth,
-                    level[i].bottom);
+                    level[i].bottom - this.config.blockSize/16);
       offset += level[i].left + this.config.obstacleWidth;
     }
   };
