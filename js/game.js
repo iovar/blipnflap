@@ -8,10 +8,10 @@ var Game = (function() {
   };
 
   _game.prototype._startLoop = function() {
-    var self = this;
+    var loop = this.loop.bind(this);
 
     this.timer = setInterval( function() {
-      requestAnimationFrame( self.loop );
+      requestAnimationFrame( loop );
     },33);
   };
 
