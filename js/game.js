@@ -11,7 +11,7 @@ var Game = (function() {
     var self = this;
 
     this.timer = setInterval( function() {
-      self.loop();
+      requestAnimationFrame( self.loop );
     },33);
   };
 
