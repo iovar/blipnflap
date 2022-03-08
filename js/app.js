@@ -1,3 +1,10 @@
+var keys = [
+    13, // enter
+    32, // space
+    29460, // tv up
+    29443, // tv enter
+];
+
 (function() {
   var _app = function() {
     this.config = new Config();
@@ -13,7 +20,8 @@
     var self = this,
         resizeTimer = -1;
     addEventListener('keydown', function(e) {
-      if(e.which === 32 || e.keycode === 32) {
+      var v = e.which || e.keycode;
+      if(v && keys.includes(v)) {
         self._handleEvent();
       }
     });
