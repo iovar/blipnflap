@@ -1,8 +1,7 @@
 var keys = [
     13, // enter
     32, // space
-    29460, // tv up
-    29443, // tv enter
+    38, // arrow up
 ];
 
 (function() {
