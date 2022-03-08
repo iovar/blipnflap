@@ -19,14 +19,21 @@ var keys = [
     var self = this,
         resizeTimer = -1;
     addEventListener('keydown', function(e) {
-      // var v = e.which || e.keycode;
-      // if(v && keys.includes(v)) {
+      var v = e.which || e.keycode;
+      if(v && keys.includes(v)) {
         self._handleEvent();
-      // }
+      }
     });
     window.document.body.addEventListener('mousedown', function(e) {
       self._handleEvent();
     });
+    window.document.body.addEventListener('keydown', function(e) {
+      self._handleEvent();
+    });
+    window.document.addEventListener('scroll', function(e) {
+      self._handleEvent();
+    });
+
     addEventListener('touchstart', function(e) {
       if(!this.soundsLoaded) {
         audio.load();
