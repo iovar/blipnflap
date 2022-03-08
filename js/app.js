@@ -25,6 +25,9 @@ var keys = [
         self._handleEvent();
       }
     });
+    window.document.body.addEventListener('mousedown', function(e) {
+      self._handleEvent();
+    });
     addEventListener('touchstart', function(e) {
       if(!this.soundsLoaded) {
         audio.load();
