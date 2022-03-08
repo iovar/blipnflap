@@ -24,15 +24,6 @@ var keys = [
         self._handleEvent();
       }
     });
-    window.document.body.addEventListener('mousedown', function(e) {
-      self._handleEvent();
-    });
-    window.document.body.addEventListener('keydown', function(e) {
-      self._handleEvent();
-    });
-    window.document.addEventListener('scroll', function(e) {
-      self._handleEvent();
-    });
 
     addEventListener('touchstart', function(e) {
       if(!this.soundsLoaded) {
