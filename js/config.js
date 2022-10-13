@@ -1,4 +1,4 @@
-var Config = (function() {
+export const Config = (function() {
   var _config = function() {
     this.calibrate();
   };

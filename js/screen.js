@@ -1,4 +1,4 @@
-var Screen = (function() {
+export const Screen = (function() {
   var _screen = function(config) {
     this.config = config;
     this._init();

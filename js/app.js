@@ -1,3 +1,8 @@
+import { Config } from './config.js';
+import { audio } from './audio.js';
+import { Screen } from './screen.js';
+import { Game } from './game.js';
+
 var keys = [
     13, // enter
     32, // space
@@ -46,8 +51,6 @@ var keys = [
   };
 
   window.addEventListener('load', function() {
-    FastClick.attach(document.body);
-    //App is a singleton
     window.App = new _app();
   }, false);
 })({});

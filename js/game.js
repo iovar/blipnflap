@@ -1,4 +1,6 @@
-var Game = (function() {
+import { audio } from './audio.js';
+
+export const Game = (function() {
   var _game = function(screen, config) {
     this.screen = screen;
     this.config = config;

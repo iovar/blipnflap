@@ -5,8 +5,6 @@
 
   <title>Blocky Flap</title>
   <link rel="stylesheet" href="css/main.css">
-  <script type="text/javascript" src="cordova.js"></script>
-  <script src="js/fastclick.js"></script>
 </head>
 <body>
   <canvas id="screen"></canvas>
@@ -14,10 +12,11 @@
     <div class="high"><span class="score">1</span></div>
     <div class="current"><span class="score">1</span></div>
   </div>
-  <script src="js/config.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/screen.js"></script>
-  <script src="js/game.js"></script>
-  <script src="js/app.js?v=s"></script>
+  <script type="text/javascript">
+      window.addEventListener('error', function(e) {
+        console.log(`${e.source}:${e.lineno}:${e.colno}: ${e.message}\n${e.stacktrace}`);
+      });
+  </script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
