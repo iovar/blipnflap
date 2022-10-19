@@ -20,6 +20,15 @@ export const Config = (function() {
     BG_PIXEL_SIZE: 4
   };
 
+  _config.prototype.audio = {
+    filename: 'audio/sounds.mp3',
+    markers: {
+      die: { start: 0, end: 0.3 },
+      move: { start: 2, end: 2.3 },
+      point: { start: 4, end: 4.3 },
+    },
+  };
+
   _config.prototype.calibrate = function() {
     this._canvasSize();
     this._blockSize();

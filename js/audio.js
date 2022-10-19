@@ -1,56 +1,49 @@
-export const audio = {
-  context: null,
-  init: function() {
+export class Audio {
+  context = null;
+  buffer = null;
+  loaded = false;
+
+  /**
+   * filename: string
+   * markers: { [key: string]: { start: number, end: number } }
+   */
+  constructor(filename, markers) {
+    this.markers = markers;
+    this.filename = filename;
+    console.log(this.filename, this.markers)
+    this.init();
+  }
+
+  init() {
     try {
-        audio.context = new AudioContext();}
+      this.context = new AudioContext();
+    }
     catch {
-        alert('Failed to initialize audio context');
+      console.error('Failed to initialize audio context');
     }
-  },
-  markers: [
-    [0,0.3], //die
-    [2,2.3], //move
-    [4,4.3] //point
-  ],
-  ready: false,
-  buffer: null,
-  nextMarker: 0,
-  load: function() {
-    if(audio.buffer === null) {
-      audio.buffer = new Audio('audio/sounds.mp3');
-    }
-    audio.buffer.load();
-    audio.buffer.addEventListener("timeupdate", function() {
-      if(audio.buffer.currentTime > audio.nextMarker) {
-        audio.buffer.pause();
-      }
-    });
-  },
-  play: function(sound) {
-    if(!audio.ready) {
-      audio.ready = true;
-      audio.load();
+  }
+
+  async load() {
+    if(this.buffer !== null || !this.context) {
       return;
     }
-    else if (audio.buffer && audio.buffer.readyState !==4) {
+
+    const file = await fetch(this.filename);
+    const raw = await file.arrayBuffer();
+    await this.context.decodeAudioData(raw, (data) => this.buffer = data);
+  }
+
+  async play(sound) {
+    if(!this.loaded) {
+      this.loaded = true;
+      await this.load();
       return;
     }
-    var limits = null;
-    switch(sound) {
-      case 'die':
-        limits = audio.markers[0];
-        break;
-      case 'move':
-        limits = audio.markers[1];
-        break;
-      case 'point':
-        limits = audio.markers[2];
-        break;
-      default:
-        limits = [0,0];
-    }
-    audio.buffer.currentTime = limits[0];
-    audio.nextMarker = limits[1];
-    audio.buffer.play();
+
+    const { start, end } = this.markers[sound] || { start: 0, end: 0 };
+    const source = this.context.createBufferSource();
+    source.buffer = this.buffer;
+    source.connect(this.context.destination);
+    source.start(0, start, end - start);
   }
 };

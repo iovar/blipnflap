@@ -1,5 +1,5 @@
+import { Audio } from './audio.js';
 import { Config } from './config.js';
-import { audio } from './audio.js';
 import { Screen } from './screen.js';
 import { Game } from './game.js';
 
@@ -13,11 +13,12 @@ var keys = [
   var _app = function() {
     this.config = new Config();
     this.screen = new Screen(this.config);
-    this.game = new Game(this.screen, this.config);
+    this.audio = new Audio(this.config.audio.filename, this.config.audio.markers);
+    this.game = new Game(this.screen, this.audio, this.config);
     this._setupEventListeners();
     this.screen.clear();
     this.soundsLoaded = false;
-    audio.play('die');
+    this.audio.play('die');
   };
 
   _app.prototype._setupEventListeners = function() {
@@ -31,9 +32,9 @@ var keys = [
     });
 
     addEventListener('touchstart', function(e) {
-      if(!this.soundsLoaded) {
-        audio.load();
-        this.soundsLoaded = true;
+      if(!self.soundsLoaded) {
+        self.audio.load();
+        self.soundsLoaded = true;
       }
       self._handleEvent();
     });
@@ -42,11 +43,11 @@ var keys = [
   _app.prototype._handleEvent = function() {
     if(this.game.state === 0) {
       this.game.start();
-      audio.play('move');
+      this.audio.play('move');
     }
     else if(this.game.state === 1){
       this.game.jump();
-      audio.play('move');
+      this.audio.play('move');
     }
   };
 

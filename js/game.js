@@ -1,8 +1,7 @@
-import { audio } from './audio.js';
-
 export const Game = (function() {
-  var _game = function(screen, config) {
+  var _game = function(screen, audio, config) {
     this.screen = screen;
+    this.audio = audio;
     this.config = config;
     this.loadHighScore();
     this.reset();
@@ -85,7 +84,7 @@ export const Game = (function() {
             fg = this.config.fg,
             bg = this.config.bg;
 
-        audio.play('die');
+        this.audio.play('die');
         this.screen.pauseGround();
         this.config.colors(fg,bg);
         this.saveHighScore();
@@ -180,7 +179,7 @@ export const Game = (function() {
          this.level[0].left + this.config.obstacleWidth)) {
       this.level[0].done = true;
       this.score++;
-      audio.play('point');
+      this.audio.play('point');
       this.screen.setScore(false, this.score);
     }
   };
