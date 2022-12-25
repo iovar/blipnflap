@@ -24,7 +24,7 @@ export class Audio {
   }
 
   async load() {
-    if(this.buffer !== null || !this.context) {
+    if (this.buffer !== null || !this.context) {
       return;
     }
 
@@ -34,7 +34,7 @@ export class Audio {
   }
 
   async play(sound) {
-    if(!this.loaded) {
+    if (!this.loaded) {
       this.loaded = true;
       await this.load();
       return;

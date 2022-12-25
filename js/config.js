@@ -7,7 +7,6 @@ export const Config = (function() {
     CANVAS_ID : 'screen',
     JUMP_SPEED : 1.3,
     GRAVITY: 4.0,
-    MAX_RATIO: 0.752,
     BLOCKS_PER_SCREEN_HEIGHT: 20,
     BLOCKS_PER_PASS_HEIGHT: 5.0,
     BLOCKS_PER_PASS_WIDTH: 1.5,
@@ -45,17 +44,11 @@ export const Config = (function() {
 
   _config.prototype._canvasSize = function() {
     this.height = document.body.clientHeight;
-    this.width = document.body.clientWidth > this._maxWidth() ?
-      this._maxWidth() : document.body.clientWidth;
-  };
-
-  _config.prototype._maxWidth = function() {
-    return this.height*this.CONST.MAX_RATIO;
+    this.width = document.body.clientWidth;
   };
 
   _config.prototype._blockSize = function() {
-    this.blockSize =
-      this.height/this.CONST.BLOCKS_PER_SCREEN_HEIGHT | 0;
+    this.blockSize = this.height/this.CONST.BLOCKS_PER_SCREEN_HEIGHT | 0;
   };
 
   _config.prototype._collisionBoundary = function() {
