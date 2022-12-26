@@ -10,8 +10,6 @@ export class Audio {
   constructor(filename, markers) {
     this.markers = markers;
     this.filename = filename;
-    console.log(this.filename, this.markers)
-    this.init();
   }
 
   init() {
@@ -24,7 +22,11 @@ export class Audio {
   }
 
   async load() {
-    if (this.buffer !== null || !this.context) {
+    if (!this.context) {
+        this.init();
+    }
+
+    if (this.buffer !== null) {
       return;
     }
 
@@ -37,7 +39,6 @@ export class Audio {
     if (!this.loaded) {
       this.loaded = true;
       await this.load();
-      return;
     }
 
     const { start, end } = this.markers[sound] || { start: 0, end: 0 };

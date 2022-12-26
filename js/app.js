@@ -4,6 +4,7 @@ import { Screen } from './screen.js';
 import { Game } from './game.js';
 
 class App {
+    soundsLoaded = false;
     keys = [
         13, // enter
         32, // space
@@ -18,7 +19,6 @@ class App {
 
         this.setupEventListeners();
         this.screen.clear();
-        this.audio.play('die');
     };
 
     setupEventListeners() {
@@ -30,6 +30,10 @@ class App {
         });
 
         addEventListener('touchstart', (e) => {
+            if (!this.soundsLoaded) {
+                this.audio.load();
+                this.soundsLoaded = true;
+            }
             this.handleEvent();
         });
     };
