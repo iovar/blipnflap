@@ -1,3 +1,9 @@
+// TODO split and rename screen to graphics, and
+// responsibility
+//      Graphics: draw all items that are to be drawn on the canvas
+//      Sprites: draw items that are image based on image sequences
+//      Text: draw text
+//      Drawable: initialize canvas drawing
 export class Screen {
     moving = true;
 

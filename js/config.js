@@ -1,3 +1,5 @@
+// TODO diferentiate to static config and environment
+
 export const Config = (function() {
   var _config = function() {
     this.calibrate();

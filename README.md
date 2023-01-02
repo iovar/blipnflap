@@ -3,6 +3,7 @@ blockyflap
 
 A flapy block game with a retro look
 
+Play [here](https://iovar.github.io/blockyflap/)
 
 
 The MIT License (MIT)

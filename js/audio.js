@@ -26,7 +26,7 @@ export class Audio {
         this.init();
     }
 
-    if (this.buffer !== null) {
+    if (this.buffer !== null || !this.context) {
       return;
     }
 

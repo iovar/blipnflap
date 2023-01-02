@@ -1,3 +1,5 @@
+// The base state machine
+// TODO breakdown and remove level drawing to a Level class
 export class Game {
     constructor(screen, audio, config) {
         this.screen = screen;
@@ -77,9 +79,7 @@ export class Game {
             this.advance();
             this.checkPoint();
             if (this.check()) {
-                const self = this,
-                    fg = this.config.fg,
-                    bg = this.config.bg;
+                const { fg, bg } = this.config;
 
                 this.audio.play('die');
                 this.screen.pauseGround();
@@ -87,14 +87,14 @@ export class Game {
                 this.saveHighScore();
                 this.state = 2;
                 this.screen.setScore(true,this.highScore);
-                setTimeout(function() {
-                    self.config.colors(bg,fg);
+                setTimeout(() => {
+                    this.config.colors(bg,fg);
                 },50);
-                setTimeout(function() {
-                    self.screen.resumeGround();
-                    self.screen.setScore(false,0);
-                    self.screen.showHighScore(true);
-                    self.reset();
+                setTimeout(() => {
+                    this.screen.resumeGround();
+                    this.screen.setScore(false,0);
+                    this.screen.showHighScore(true);
+                    this.reset();
                 },3000);
             }
         } else if (this.state === 2) {
