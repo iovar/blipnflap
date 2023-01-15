@@ -1,0 +1,8 @@
+{
+    "name": "Blocky Flap",
+    "start_url": "./",
+    "scope": ".",
+    "icons": [],
+    "display": "fullscreen",
+    "orientation": "portrait"
+}
