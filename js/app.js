@@ -1,5 +1,5 @@
 import { Audio } from './audio.js';
-import { Config } from './config.js';
+import { StaticConfig } from './config.js';
 import { Screen } from './screen.js';
 import { Game } from './game.js';
 
@@ -12,10 +12,9 @@ class App {
     ];
 
     constructor() {
-        this.config = new Config();
         this.screen = new Screen(this.config);
-        this.audio = new Audio(this.config.audio.filename, this.config.audio.markers);
-        this.game = new Game(this.screen, this.audio, this.config);
+        this.audio = new Audio(StaticConfig.audio.filename, StaticConfig.audio.markers);
+        this.game = new Game(this.screen, this.audio);
 
         this.setupEventListeners();
         this.screen.clear();

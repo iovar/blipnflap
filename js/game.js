@@ -1,10 +1,9 @@
-// The base state machine
-// TODO breakdown and remove level drawing to a Level class
+import { DynamicConfig, StaticConfig } from './config.js';
+
 export class Game {
-    constructor(screen, audio, config) {
+    constructor(screen, audio) {
         this.screen = screen;
         this.audio = audio;
-        this.config = config;
         this.loadHighScore();
         this.reset();
         this.startLoop();
@@ -30,11 +29,11 @@ export class Game {
     };
 
     advance() {
-        if (this.level[0].left < - this.config.obstacleWidth) {
+        if (this.level[0].left < - DynamicConfig.getObstacleWidth()) {
             this.level.shift();
             this.level.push(this.getObstacle());
         }
-        this.level[0].left -= this.config.blockSize/8;
+        this.level[0].left -= DynamicConfig.getSoarWidth()/8;
     };
 
     check() {
@@ -43,8 +42,8 @@ export class Game {
     };
 
     checkBottom() {
-        const maxY =  this.config.height - this.config.groundHeight -
-            this.config.offset.y - this.config.blockSize;
+        const maxY =  DynamicConfig.getSize().height - DynamicConfig.getGroundHeight() -
+            DynamicConfig.getOffset().y - DynamicConfig.getSoarWidth();
         if (this.position.y >= maxY ) {
             this.position.y = maxY;
             return true;
@@ -52,15 +51,15 @@ export class Game {
     };
 
     checkObstacle() {
-        const boundary = this.config.collisionBoundary;
+        const boundary = DynamicConfig.getCollisionBoundary();
         const obx1 = this.level[0].left;
-        const obx2 = obx1 + this.config.obstacleWidth;
+        const obx2 = obx1 + DynamicConfig.getObstacleWidth();
         const obminy = this.level[0].top;
         const obmaxy = obminy + this.level[0].pass;
-        const px1 = this.config.offset.x;
-        const px2 = px1 + this.config.blockSize;
-        const pminy = this.config.offset.y + this.position.y;
-        const pmaxy = pminy + this.config.blockSize;
+        const px1 = DynamicConfig.getOffset().x;
+        const px2 = px1 + DynamicConfig.getSoarWidth();
+        const pminy = DynamicConfig.getOffset().y + this.position.y;
+        const pmaxy = pminy + DynamicConfig.getSoarWidth();
 
         if ( (px2 - obx1 > boundary  && obx2 > px2) ||
             (px1 > obx1 && obx2 - px1 > boundary) ) {
@@ -79,16 +78,16 @@ export class Game {
             this.advance();
             this.checkPoint();
             if (this.check()) {
-                const { fg, bg } = this.config;
+                const { FG_COLOR: fg, BG_COLOR: bg } = StaticConfig.colors;
 
                 this.audio.play('die');
                 this.screen.pauseGround();
-                this.config.colors(fg,bg);
+                this.screen.setNegative(true);
                 this.saveHighScore();
                 this.state = 2;
                 this.screen.setScore(true,this.highScore);
                 setTimeout(() => {
-                    this.config.colors(bg,fg);
+                    this.screen.setNegative(false);
                 },50);
                 setTimeout(() => {
                     this.screen.resumeGround();
@@ -98,7 +97,7 @@ export class Game {
                 },3000);
             }
         } else if (this.state === 2) {
-            if (this.position.y + this.config.offset.y<this.config.height - this.config.groundHeight - this.config.blockSize) {
+            if (this.position.y + DynamicConfig.getOffset().y < DynamicConfig.getSize().height - DynamicConfig.getGroundHeight() - DynamicConfig.getSoarWidth()) {
                 this.move();
             }
         } else if (this.state === 0) {
@@ -116,20 +115,20 @@ export class Game {
 
     generateLevel() {
         this.level = [];
-        for (let i = 0; i<this.config.maxObstacles; i++) {
+        for (let i = 0; i<DynamicConfig.getMaxObstacles(); i++) {
             this.level.push(this.getObstacle());
         }
-        this.level[0].left += this.config.width*1;
+        this.level[0].left += DynamicConfig.getSize().width*1;
     };
 
     getObstacle() {
-        const num = this.config.obstacleHeight.length;
+        const num = StaticConfig.relative.OBSTACLE_HEIGHTS.length;
         const sel =  Math.floor(Math.random() * num);
         const obstacle = {
-            top: this.config.obstacleHeight[sel],
-            pass: this.config.passHeight,
-            bottom: this.config.obstacleHeight[num - sel - 1],
-            left: this.config.obstacleDistance,
+            top: DynamicConfig.getObstacleHeight(sel),
+            pass: DynamicConfig.getPassHeight(),
+            bottom: DynamicConfig.getObstacleHeight(num - sel - 1),
+            left: DynamicConfig.getObstacleDistance(),
             done: false
         };
         return obstacle;
@@ -137,20 +136,20 @@ export class Game {
 
     move() {
         const dt = (Date.now() - this.timestamp)/1000;
-        this.position.y-=this.speed*(this.config.height/150);
-        if (this.speed >= -2*this.config.CONST.JUMP_SPEED) {
-            this.speed -= 1/2 * (this.config.CONST.GRAVITY * Math.pow(dt,2));
+        this.position.y-=this.speed*(DynamicConfig.getSize().height/150);
+        if (this.speed >= -2*StaticConfig.JUMP_SPEED) {
+            this.speed -= 1/2 * (StaticConfig.GRAVITY * Math.pow(dt,2));
         }
     };
 
     soar() {
-        const pos = Math.sin(this.ymod/10)*(this.config.soarWidth/2);
+        const pos = Math.sin(this.ymod/10)*(DynamicConfig.getSoarWidth()/2);
         this.position.y = pos;
         this.ymod++;
     };
 
     jump() {
-        this.speed = this.config.CONST.JUMP_SPEED;
+        this.speed = StaticConfig.JUMP_SPEED;
         this.timestamp = Date.now();
     };
 
@@ -170,8 +169,8 @@ export class Game {
 
     checkPoint() {
         if ( this.level[0] && !this.level[0].done &&
-            (this.config.offset.x >
-                this.level[0].left + this.config.obstacleWidth)) {
+            (DynamicConfig.getOffset().x >
+                this.level[0].left + DynamicConfig.getObstacleWidth())) {
             this.level[0].done = true;
             this.score++;
             this.audio.play('point');
