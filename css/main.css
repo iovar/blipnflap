@@ -10,6 +10,12 @@ html, body {
   text-align: center;
 }
 
+body {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 canvas {
   display: block;
   margin: 0 auto;

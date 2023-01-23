@@ -1,53 +1,54 @@
-var keys = [
-    13, // enter
-    32, // space
-    38, // arrow up
-];
+import { Audio } from './audio.js';
+import { StaticConfig } from './config.js';
+import { Screen } from './screen.js';
+import { Game } from './game.js';
 
-(function() {
-  var _app = function() {
-    this.config = new Config();
-    this.screen = new Screen(this.config);
-    this.game = new Game(this.screen, this.config);
-    this._setupEventListeners();
-    this.screen.clear();
-    this.soundsLoaded = false;
-    audio.play('die');
-  };
+class App {
+    soundsLoaded = false;
+    keys = [
+        13, // enter
+        32, // space
+        38, // arrow up
+    ];
 
-  _app.prototype._setupEventListeners = function() {
-    var self = this,
-        resizeTimer = -1;
-    addEventListener('keydown', function(e) {
-      var v = e.which || e.keycode;
-      if(v && keys.includes(v)) {
-        self._handleEvent();
-      }
-    });
+    constructor() {
+        this.screen = new Screen(this.config);
+        this.audio = new Audio(StaticConfig.audio.filename, StaticConfig.audio.markers);
+        this.game = new Game(this.screen, this.audio);
 
-    addEventListener('touchstart', function(e) {
-      if(!this.soundsLoaded) {
-        audio.load();
-        this.soundsLoaded = true;
-      }
-      self._handleEvent();
-    });
-  };
+        this.setupEventListeners();
+        this.screen.clear();
+    };
 
-  _app.prototype._handleEvent = function() {
-    if(this.game.state === 0) {
-      this.game.start();
-      audio.play('move');
-    }
-    else if(this.game.state === 1){
-      this.game.jump();
-      audio.play('move');
-    }
-  };
+    setupEventListeners() {
+        addEventListener('keydown', (e) => {
+            const v = e.which || e.keycode;
+            if (v && this.keys.includes(v)) {
+                this.handleEvent();
+            }
+        });
 
-  window.addEventListener('load', function() {
-    FastClick.attach(document.body);
-    //App is a singleton
-    window.App = new _app();
-  }, false);
-})({});
+        addEventListener('touchstart', (e) => {
+            if (!this.soundsLoaded) {
+                this.audio.load();
+                this.soundsLoaded = true;
+            }
+            this.handleEvent();
+        });
+    };
+
+    handleEvent() {
+        if (this.game.state === 0) {
+            this.game.start();
+            this.audio.play('move');
+        }
+        else if (this.game.state === 1){
+            this.game.jump();
+            this.audio.play('move');
+        }
+    };
+}
+
+window.addEventListener('load', function() {
+    new App();
+}, false);

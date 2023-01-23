@@ -1,14 +1,14 @@
-blockyflap
+Blip'n'Flap
 ==========
 
-A flapy block game with a retro look
+A game with blips, flaps & retro look
 
-
+Play [here](https://iovar.github.io/blipnflap/)
 
 
 The MIT License (MIT)
 
-Copyright (c) 2014 John Varouhakis
+Copyright (c) 2014 - 2023 Ioannis Varouchakis
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

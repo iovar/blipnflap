@@ -1,101 +1,50 @@
-var _audioTag = {
-  markers: [
-    [0,0.3], //die
-    [2,2.3], //move
-    [4,4.3] //point
-  ],
-  ready: false,
-  buffer: null,
-  nextMarker: 0,
-  load: function() {
-    if(audio.buffer === null) {
-      audio.buffer = new Audio('audio/sounds.mp3');
-    }
-    audio.buffer.load();
-    audio.buffer.addEventListener("timeupdate", function() {
-      if(audio.buffer.currentTime > audio.nextMarker) {
-        audio.buffer.pause();
-      }
-    });
-  },
-  play: function(sound) {
-    if(!audio.ready) {
-      audio.ready = true;
-      audio.load();
-      return;
-    }
-    else if (audio.buffer && audio.buffer.readyState !==4) {
-      return;
-    }
-    var limits = null;
-    switch(sound) {
-      case 'die':
-        limits = audio.markers[0];
-        break;
-      case 'move':
-        limits = audio.markers[1];
-        break;
-      case 'point':
-        limits = audio.markers[2];
-        break;
-      default:
-        limits = [0,0];
-    }
-    audio.buffer.currentTime = limits[0];
-    audio.nextMarker = limits[1];
-    audio.buffer.play();
+export class Audio {
+  context = null;
+  buffer = null;
+  loaded = false;
+
+  /**
+   * filename: string
+   * markers: { [key: string]: { start: number, end: number } }
+   */
+  constructor(filename, markers) {
+    this.markers = markers;
+    this.filename = filename;
   }
 
-};
+  init() {
+    try {
+      this.context = new AudioContext();
+    }
+    catch {
+      console.error('Failed to initialize audio context');
+    }
+  }
 
-var _audioCordova = {
-  markers: [
-    [0,300], //die
-    [2000,2300], //move
-    [4000,4300] //point
-  ],
-  ready: false,
-  buffer: null,
-  nextMarker: 0,
-  timer: -1,
-  load: function() {
-    if(audio.buffer === null) {
-      audio.buffer = new Media("file:///android_asset/www/audio/sounds.mp3");
-      audio.timer = setInterval(function() {
-        audio.buffer.getCurrentPosition( function(position) {
-          if(position*1000 > audio.nextMarker) {
-            audio.buffer.pause();
-          }
-        });
-      },100);
-      audio.buffer.play();
+  async load() {
+    if (!this.context) {
+        this.init();
     }
-  },
-  play: function(sound) {
-    var limits = null;
-    switch(sound) {
-      case 'die':
-        limits = audio.markers[0];
-        break;
-      case 'move':
-        limits = audio.markers[1];
-        break;
-      case 'point':
-        limits = audio.markers[2];
-        break;
-      default:
-        limits = [0,0];
+
+    if (this.buffer !== null || !this.context) {
+      return;
     }
-    audio.buffer.seekTo(limits[0]);
-    audio.nextMarker = limits[1];
-    audio.buffer.play();
+
+    const file = await fetch(this.filename);
+    const raw = await file.arrayBuffer();
+    await this.context.decodeAudioData(raw, (data) => this.buffer = data);
+  }
+
+  async play(sound) {
+    if (!this.loaded) {
+      this.loaded = true;
+      await this.load();
+    }
+
+    const { start, end } = this.markers[sound] || { start: 0, end: 0 };
+    const source = this.context.createBufferSource();
+    source.buffer = this.buffer;
+    source.connect(this.context.destination);
+    source.start(0, start, end - start);
   }
 };
-
-if(window.cordova) {
-  window.audio = _audioCordova;
-}
-else {
-  window.audio = _audioTag;
-}
-

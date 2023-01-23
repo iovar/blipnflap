@@ -1,0 +1,14 @@
+{
+    "name": "Blip'n'Flap",
+    "start_url": "./",
+    "scope": ".",
+    "icons": [
+        {
+            "src": "icon.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        }
+    ],
+    "display": "fullscreen",
+    "orientation": "portrait"
+}
