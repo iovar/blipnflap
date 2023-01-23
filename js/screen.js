@@ -77,7 +77,7 @@ export class Screen {
         this.context.beginPath();
         this.context.arc(position.x + x + soarWidth/2,
             position.y + y + soarWidth/2,
-             soarWidth/2,
+            soarWidth/2,
             (0.75 +this.mouth) * Math.PI, (1.75+this.mouth) * Math.PI,false);
 
         this.context.closePath ();

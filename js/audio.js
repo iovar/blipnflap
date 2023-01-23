@@ -1,50 +1,50 @@
 export class Audio {
-  context = null;
-  buffer = null;
-  loaded = false;
+    context = null;
+    buffer = null;
+    loaded = false;
 
-  /**
-   * filename: string
-   * markers: { [key: string]: { start: number, end: number } }
-   */
-  constructor(filename, markers) {
-    this.markers = markers;
-    this.filename = filename;
-  }
-
-  init() {
-    try {
-      this.context = new AudioContext();
-    }
-    catch {
-      console.error('Failed to initialize audio context');
-    }
-  }
-
-  async load() {
-    if (!this.context) {
-        this.init();
+    /**
+     * filename: string
+     * markers: { [key: string]: { start: number, end: number } }
+     */
+    constructor(filename, markers) {
+        this.markers = markers;
+        this.filename = filename;
     }
 
-    if (this.buffer !== null || !this.context) {
-      return;
+    init() {
+        try {
+            this.context = new AudioContext();
+        }
+        catch {
+            console.error('Failed to initialize audio context');
+        }
     }
 
-    const file = await fetch(this.filename);
-    const raw = await file.arrayBuffer();
-    await this.context.decodeAudioData(raw, (data) => this.buffer = data);
-  }
+    async load() {
+        if (!this.context) {
+            this.init();
+        }
 
-  async play(sound) {
-    if (!this.loaded) {
-      this.loaded = true;
-      await this.load();
+        if (this.buffer !== null || !this.context) {
+            return;
+        }
+
+        const file = await fetch(this.filename);
+        const raw = await file.arrayBuffer();
+        await this.context.decodeAudioData(raw, (data) => this.buffer = data);
     }
 
-    const { start, end } = this.markers[sound] || { start: 0, end: 0 };
-    const source = this.context.createBufferSource();
-    source.buffer = this.buffer;
-    source.connect(this.context.destination);
-    source.start(0, start, end - start);
-  }
+    async play(sound) {
+        if (!this.loaded) {
+            this.loaded = true;
+            await this.load();
+        }
+
+        const { start, end } = this.markers[sound] || { start: 0, end: 0 };
+        const source = this.context.createBufferSource();
+        source.buffer = this.buffer;
+        source.connect(this.context.destination);
+        source.start(0, start, end - start);
+    }
 };

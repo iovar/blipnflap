@@ -19,9 +19,9 @@ export const StaticConfig = {
     audio: {
         filename: 'audio/sounds.mp3',
         markers: {
-          die: { start: 0, end: 0.3 },
-          move: { start: 2, end: 2.3 },
-          point: { start: 4, end: 4.3 },
+            die: { start: 0, end: 0.3 },
+            move: { start: 2, end: 2.3 },
+            point: { start: 4, end: 4.3 },
         },
     },
 
