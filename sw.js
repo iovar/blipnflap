@@ -1,4 +1,4 @@
-const cacheName = 'blockyflap-cache-v1';
+const cacheName = 'blipnflap-cache-v1';
 
 const cachedFiles = [
     './',
