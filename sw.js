@@ -1,7 +1,7 @@
 const cacheName = 'blockyflap-cache-v1';
 
 const cachedFiles = [
-    '/',
+    './',
     'audio/sounds.mp3',
     'css/main.css',
     'js/app.js',

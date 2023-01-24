@@ -6,22 +6,22 @@
 
     <title>Blip'n'Flap</title>
     <link rel="stylesheet" href="css/main.css">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="144x144" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
-  <canvas id="screen"></canvas>
-  <div id="score-board" class='show-high'>
-    <div class="high"><span class="score">1</span></div>
-    <div class="current"><span class="score">1</span></div>
-  </div>
-  <script>
-      if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('sw.js');
-      }
-  </script>
-  <script type="module" src="js/app.js"></script>
+    <canvas id="screen"></canvas>
+    <div id="score-board" class='show-high'>
+        <div class="high"><span class="score">1</span></div>
+        <div class="current"><span class="score">1</span></div>
+    </div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

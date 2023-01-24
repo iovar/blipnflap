@@ -1,7 +1,3 @@
-// TODO diferentiate to static config and environment
-// Static: all independant + percentages
-// Absolute: environment specific pixel numbers
-
 export const StaticConfig = {
     CANVAS_ID : 'screen',
     SCORE_BOARD_ID: 'score-board',
