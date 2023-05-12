@@ -22,18 +22,6 @@
             navigator.serviceWorker.register('sw.js');
         }
     </script>
-    <script>
-        const screen = document.getElementById('screen');
-        if (screen.requestFullscreen) {
-            const events = [ 'keydown', 'touchstart' ];
-            const handlers = events.map(event => {
-                return document.addEventListener(event, () => {
-                    screen.requestFullscreen();
-                    handlers.forEach(handler => document.removeEventListener(event, handler));
-                });
-            });
-        }
-    </script>
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
