@@ -1,4 +1,4 @@
-const cacheName = 'blipnflap-cache-v1';
+const cacheName = 'blipnflap-cache-v2';
 
 const cachedFiles = [
     './',
@@ -38,7 +38,7 @@ const fetchFromCacheFirst = async (event) => {
     const cache = await caches.open(cacheName);
     const response = await cache.match(event.request);
 
-    if (response) {
+    if (response && !navigator.onLine) {
         return response;
     }
 
