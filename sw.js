@@ -1,4 +1,4 @@
-const cacheName = 'blipnflap-cache-v2';
+const cacheName = 'blipnflap-cache-v3';
 
 const cachedFiles = [
     './',
@@ -24,7 +24,7 @@ const removeStaleCaches = async () => {
     const keys = await caches.keys();
     const staleKeys = keys.filter((key) => key !== cacheName);
 
-    return Promise.all(key.map((key) => caches.delete(key)));
+    return Promise.all(staleKeys.map((key) => caches.delete(key)));
 }
 
 const fetchFromNetwork = async (cache, event) => {
